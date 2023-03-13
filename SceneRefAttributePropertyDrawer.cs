@@ -13,9 +13,9 @@ namespace KBCore.Refs
     /// 
     /// Note: Does not apply to the Anywhere attribute as that needs to remain editable. 
     /// </summary>
-    [CustomPropertyDrawer(typeof(SelfAttribute))]
-    [CustomPropertyDrawer(typeof(ChildAttribute))]
-    [CustomPropertyDrawer(typeof(ParentAttribute))]
+    [CustomPropertyDrawer(typeof(GetOnSelfAttribute))]
+    [CustomPropertyDrawer(typeof(GetOnChildAttribute))]
+    [CustomPropertyDrawer(typeof(GetOnParentAttribute))]
 #if UNITY_2022_2_OR_NEWER
     public class SceneRefAttributePropertyDrawer : DecoratorDrawer
     {

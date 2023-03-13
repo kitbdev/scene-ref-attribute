@@ -82,37 +82,37 @@ namespace KBCore.Refs
     }
     
     /// <summary>
-    /// Self looks for the reference on the same game object as the attributed component
+    /// GetOnSelf looks for the reference on the same game object as the attributed component
     /// using GetComponent(s)()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class SelfAttribute : SceneRefAttribute
+    public class GetOnSelfAttribute : SceneRefAttribute
     {
-        public SelfAttribute(Flag flags = Flag.None) 
+        public GetOnSelfAttribute(Flag flags = Flag.None) 
             : base(RefLoc.Self, flags: flags)
         {}
     }
     
     /// <summary>
-    /// Parent looks for the reference on the parent hierarchy of the attributed components game object
+    /// GetOnParent looks for the reference on the parent hierarchy of the attributed components game object
     /// using GetComponent(s)InParent()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class ParentAttribute : SceneRefAttribute
+    public class GetOnParentAttribute : SceneRefAttribute
     {
-        public ParentAttribute(Flag flags = Flag.None) 
+        public GetOnParentAttribute(Flag flags = Flag.None) 
             : base(RefLoc.Parent, flags: flags)
         {}
     }
     
     /// <summary>
-    /// Child looks for the reference on the child hierarchy of the attributed components game object
+    /// GetOnChild looks for the reference on the child hierarchy of the attributed components game object
     /// using GetComponent(s)InChildren()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class ChildAttribute : SceneRefAttribute
+    public class GetOnChildAttribute : SceneRefAttribute
     {
-        public ChildAttribute(Flag flags = Flag.None) 
+        public GetOnChildAttribute(Flag flags = Flag.None) 
             : base(RefLoc.Child, flags: flags)
         {}
     }
