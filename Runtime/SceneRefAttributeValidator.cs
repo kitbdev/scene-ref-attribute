@@ -259,7 +259,7 @@ namespace KBCore.Refs {
             }
         }
 
-        private static bool IsEmptyOrNull(object obj, bool isArray) {
+        public static bool IsEmptyOrNull(object obj, bool isArray) {
             if (obj is ISerializableRef ser)
                 return !ser.HasSerializedObject;
 

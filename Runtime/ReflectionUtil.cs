@@ -1,42 +1,36 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
-namespace KBCore.Refs
-{
-    internal class ReflectionUtil
-    {
-        
+namespace KBCore.Refs {
+    internal class ReflectionUtil {
+
         internal struct AttributedField<T>
-            where T : Attribute
-        {
+            where T : Attribute {
             public T Attribute;
             public FieldInfo FieldInfo;
         }
-        
+
         internal static void GetFieldsWithAttributeFromType<T>(
             Type classToInspect,
             List<AttributedField<T>> output,
             BindingFlags reflectionFlags = BindingFlags.Default
         )
-            where T : Attribute
-        {
+            where T : Attribute {
             Type type = typeof(T);
-            do
-            {
+            do {
                 FieldInfo[] allFields = classToInspect.GetFields(reflectionFlags);
-                for (int f = 0; f < allFields.Length; f++)
-                {
+                for (int f = 0; f < allFields.Length; f++) {
                     FieldInfo fieldInfo = allFields[f];
                     Attribute[] attributes = Attribute.GetCustomAttributes(fieldInfo);
-                    for (int a = 0; a < attributes.Length; a++)
-                    {
+                    for (int a = 0; a < attributes.Length; a++) {
                         Attribute attribute = attributes[a];
                         if (!type.IsInstanceOfType(attribute))
                             continue;
 
-                        output.Add(new AttributedField<T>
-                        {
+                        output.Add(new AttributedField<T> {
                             Attribute = attribute as T,
                             FieldInfo = fieldInfo
                         });
@@ -45,7 +39,7 @@ namespace KBCore.Refs
                 }
 
                 classToInspect = classToInspect.BaseType;
-            } 
+            }
             while (classToInspect != null);
         }
     }
