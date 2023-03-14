@@ -9,11 +9,11 @@ using Object = UnityEngine.Object;
 using UnityEditor;
 #endif
 
-namespace KBCore.Refs
+namespace KBCore.Refs 
 {
-    public static class SceneRefAttributeValidator
+    public static class SceneRefAttributeValidator 
     {
-        
+
 #if UNITY_EDITOR
         private static readonly List<ReflectionUtil.AttributedField<SceneRefAttribute>> ATTRIBUTED_FIELDS_CACHE = new();
 
@@ -303,9 +303,9 @@ namespace KBCore.Refs
             return obj == null || obj.Equals(null) || (isArray && ((Array)obj).Length == 0);
         }
 #else
-        public static void ValidateRefs(this Component c) {}
-        public static void Validate(Component c) {}        
+        public static void ValidateRefs(this Component c) { }
+        public static void Validate(Component c) { }
 #endif
-        
+
     }
 }

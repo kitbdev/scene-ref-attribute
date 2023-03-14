@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 #if UNITY_2022_2_OR_NEWER
 using UnityEngine.UIElements;
@@ -63,4 +62,3 @@ namespace KBCore.Refs
     }
 #endif
 }
-#endif
