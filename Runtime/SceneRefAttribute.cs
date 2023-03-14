@@ -1,13 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-namespace KBCore.Refs
-{
+namespace KBCore.Refs {
     /// <summary>
     /// RefLoc indicates the expected location of the reference.
     /// </summary>
-    internal enum RefLoc
-    {
+    internal enum RefLoc {
         /// <summary>
         /// Anywhere will only validate the reference isn't null, but relies on you to 
         /// manually assign the reference yourself.
@@ -34,13 +32,12 @@ namespace KBCore.Refs
         /// </summary>
         Scene = 4,
     }
-    
+
     /// <summary>
     /// Optional flags offering additional functionality.
     /// </summary>
     [Flags]
-    public enum Flag
-    {
+    public enum Flag {
         /// <summary>
         /// Default behaviour.
         /// </summary>
@@ -54,18 +51,16 @@ namespace KBCore.Refs
         /// </summary>
         IncludeInactive = 2,
     }
-    
+
     /// <summary>
     /// Attribute allowing you to decorate component reference fields with their search criteria. 
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public abstract class SceneRefAttribute : PropertyAttribute
-    {
+    public abstract class SceneRefAttribute : PropertyAttribute {
         internal RefLoc Loc { get; }
-        internal Flag Flags { get;  }
+        internal Flag Flags { get; }
 
-        internal SceneRefAttribute(RefLoc loc, Flag flags = Flag.None) 
-        {
+        internal SceneRefAttribute(RefLoc loc, Flag flags = Flag.None) {
             this.Loc = loc;
             this.Flags = flags;
         }
@@ -73,53 +68,45 @@ namespace KBCore.Refs
         internal bool HasFlags(Flag flags)
             => (this.Flags & flags) == flags;
     }
-    
+
     /// <summary>
     /// Anywhere will only validate the reference isn't null, but relies on you to 
     /// manually assign the reference yourself.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class AnywhereAttribute : SceneRefAttribute
-    {
-        public AnywhereAttribute(Flag flags = Flag.None) 
-            : base(RefLoc.Anywhere, flags: flags)
-        {}
+    public class AnywhereAttribute : SceneRefAttribute {
+        public AnywhereAttribute(Flag flags = Flag.None)
+            : base(RefLoc.Anywhere, flags: flags) { }
     }
-    
+
     /// <summary>
     /// GetOnSelf looks for the reference on the same game object as the attributed component
     /// using GetComponent(s)()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class GetOnSelfAttribute : SceneRefAttribute
-    {
-        public GetOnSelfAttribute(Flag flags = Flag.None) 
-            : base(RefLoc.Self, flags: flags)
-        {}
+    public class GetOnSelfAttribute : SceneRefAttribute {
+        public GetOnSelfAttribute(Flag flags = Flag.None)
+            : base(RefLoc.Self, flags: flags) { }
     }
-    
+
     /// <summary>
     /// GetOnParent looks for the reference on the parent hierarchy of the attributed components game object
     /// using GetComponent(s)InParent()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class GetOnParentAttribute : SceneRefAttribute
-    {
-        public GetOnParentAttribute(Flag flags = Flag.None) 
-            : base(RefLoc.Parent, flags: flags)
-        {}
+    public class GetOnParentAttribute : SceneRefAttribute {
+        public GetOnParentAttribute(Flag flags = Flag.None)
+            : base(RefLoc.Parent, flags: flags) { }
     }
-    
+
     /// <summary>
     /// GetOnChild looks for the reference on the child hierarchy of the attributed components game object
     /// using GetComponent(s)InChildren()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class GetOnChildAttribute : SceneRefAttribute
-    {
-        public GetOnChildAttribute(Flag flags = Flag.None) 
-            : base(RefLoc.Child, flags: flags)
-        {}
+    public class GetOnChildAttribute : SceneRefAttribute {
+        public GetOnChildAttribute(Flag flags = Flag.None)
+            : base(RefLoc.Child, flags: flags) { }
     }
 
     /// <summary>
@@ -127,10 +114,8 @@ namespace KBCore.Refs
     /// using GameObject.FindAnyObjectByType() and GameObject.FindObjectsOfType()
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class GetInSceneAttribute : SceneRefAttribute
-    {
-        public GetInSceneAttribute(Flag flags = Flag.None) 
-            : base(RefLoc.Scene, flags: flags)
-        {}
+    public class GetInSceneAttribute : SceneRefAttribute {
+        public GetInSceneAttribute(Flag flags = Flag.None)
+            : base(RefLoc.Scene, flags: flags) { }
     }
 }

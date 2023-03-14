@@ -5,8 +5,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 #endif
 
-namespace KBCore.Refs
-{
+namespace KBCore.Refs {
     /// <summary>
     /// Custom property drawer for the reference attributes, making them read-only.
     /// 
@@ -47,17 +46,15 @@ namespace KBCore.Refs
         }
     }
 #else
-    public class SceneRefAttributePropertyDrawer : PropertyDrawer
-    {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+    public class SceneRefAttributePropertyDrawer : PropertyDrawer {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             bool wasEnabled = GUI.enabled;
             GUI.enabled = false;
             EditorGUI.PropertyField(position, property, label, true);
             GUI.enabled = wasEnabled;
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) 
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             => EditorGUI.GetPropertyHeight(property, label);
     }
 #endif
