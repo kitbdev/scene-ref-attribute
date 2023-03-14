@@ -50,6 +50,10 @@ namespace KBCore.Refs {
         /// Include inactive components in the results (only applies to Child and Parent). 
         /// </summary>
         IncludeInactive = 2,
+        /// <summary>
+        /// Allow the field to be editable in the inspector
+        /// </summary>
+        Editable = 4,
     }
 
     /// <summary>
@@ -74,8 +78,8 @@ namespace KBCore.Refs {
     /// manually assign the reference yourself.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class AnywhereAttribute : SceneRefAttribute {
-        public AnywhereAttribute(Flag flags = Flag.None)
+    public class GetAnywhereAttribute : SceneRefAttribute {
+        public GetAnywhereAttribute(Flag flags = Flag.Editable)
             : base(RefLoc.Anywhere, flags: flags) { }
     }
 
