@@ -54,14 +54,18 @@ namespace KBCore.Refs {
                 return;
             }
             propertyField.AddToClassList(sceneRefPropFieldClass);
-            // sceneRefProp = GetBindedPropertyFromDecorator(sceneRefDecorator);
+            if (propertyField.tooltip == null || propertyField.tooltip == "") {
+                propertyField.tooltip = $"Reference from [{sceneRefAttribute.Loc.ToString()}] assigned in OnValidate";
+            }
 
             if (!sceneRefAttribute.HasFlags(Flag.Editable)) {
                 // disable the property
                 propertyField.SetEnabled(false);
                 missingRefBox.SetEnabled(true);
             }
+
             // todo
+            // sceneRefProp = GetBindedPropertyFromDecorator(sceneRefDecorator);
             // if (sceneRefProp != null) {
             //     Object value = sceneRefProp.objectReferenceValue;
             //     bool hasRef = !sceneRefAttribute.HasFlags(Flag.Optional) && 
