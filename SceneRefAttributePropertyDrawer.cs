@@ -16,6 +16,7 @@ namespace KBCore.Refs
     [CustomPropertyDrawer(typeof(GetOnSelfAttribute))]
     [CustomPropertyDrawer(typeof(GetOnChildAttribute))]
     [CustomPropertyDrawer(typeof(GetOnParentAttribute))]
+    [CustomPropertyDrawer(typeof(GetInSceneAttribute))]
 #if UNITY_2022_2_OR_NEWER
     public class SceneRefAttributePropertyDrawer : DecoratorDrawer
     {

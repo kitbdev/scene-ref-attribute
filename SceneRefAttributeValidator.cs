@@ -138,6 +138,7 @@ namespace KBCore.Refs
             
             bool isArray = fieldType.IsArray;
             bool includeInactive = attr.HasFlags(Flag.IncludeInactive);
+            FindObjectsInactive includeInactiveObjects = includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude;
             
             Type elementType = fieldType;
             if (isArray)
@@ -173,6 +174,12 @@ namespace KBCore.Refs
                     value = isArray
                         ? c.GetComponentsInChildren(elementType, includeInactive)
                         : c.GetComponentInChildren(elementType, includeInactive);
+                    break;
+                case RefLoc.Scene:
+                    FindObjectsSortMode findObjectsSortMode = FindObjectsSortMode.None;
+                    value = isArray
+                        ? GameObject.FindObjectsByType(elementType, includeInactiveObjects, findObjectsSortMode)
+                        : GameObject.FindAnyObjectByType(elementType, includeInactiveObjects);
                     break;
                 default:
                     throw new Exception($"Unhandled Loc={attr.Loc}");
@@ -276,6 +283,11 @@ namespace KBCore.Refs
                 case RefLoc.Child:
                     if (!refObj.transform.IsChildOf(c.transform))
                         Debug.LogError($"{c.GetType().Name} requires {field.FieldType.Name} ref '{field.Name}' to be a Child", c.gameObject);
+                    break;
+                    
+                case RefLoc.Scene:
+                    if (c == null)
+                        Debug.LogError($"{c.GetType().Name} requires {field.FieldType.Name} ref '{field.Name}' to be in the scene", c.gameObject);
                     break;
                     
                 default:
