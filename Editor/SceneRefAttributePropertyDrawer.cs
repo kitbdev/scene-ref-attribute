@@ -27,10 +27,13 @@ namespace KBCore.Refs {
         VisualElement sceneRefDecorator;
         HelpBox missingRefBox;
         SerializedProperty sceneRefProp;
+        InspectorElement inspectorElement;
 
         SceneRefAttribute sceneRefAttribute => (SceneRefAttribute)attribute;
 
         public override VisualElement CreatePropertyGUI() {
+            sceneRefProp = null;
+
             sceneRefDecorator = new VisualElement();
             sceneRefDecorator.name = "SceneRefDecorator";
             sceneRefDecorator.AddToClassList(sceneRefDecoratorClass);
@@ -60,18 +63,35 @@ namespace KBCore.Refs {
 
             if (!sceneRefAttribute.HasFlags(Flag.Editable)) {
                 // disable the property
+                // ? disabling the property also disables the helpbox...
                 propertyField.SetEnabled(false);
                 missingRefBox.SetEnabled(true);
             }
 
-            // todo
-            // sceneRefProp = GetBindedPropertyFromDecorator(sceneRefDecorator);
-            // if (sceneRefProp != null) {
-            //     Object value = sceneRefProp.objectReferenceValue;
-            //     bool hasRef = !sceneRefAttribute.HasFlags(Flag.Optional) && 
-            //         SceneRefAttributeValidator.IsEmptyOrNull(value, sceneRefProp.isArray);
-            //     missingRefBox.style.display = hasRef ? DisplayStyle.None : DisplayStyle.Flex;
-            // }
+
+            // get inspector element to register an onvalidate callback
+            inspectorElement = propertyField.GetFirstAncestorOfType<InspectorElement>();
+            if (inspectorElement == null) {
+                Debug.LogError($"AddNote - inspectorElement null!");
+                return;
+            }
+            // this properly responds to all changes
+            inspectorElement.RegisterCallback<SerializedPropertyChangeEvent>(OnUpdate);
+            sceneRefDecorator.RegisterCallback<DetachFromPanelEvent>(OnDetach);
+        }
+        void OnUpdate(SerializedPropertyChangeEvent changeEvent) => UpdateField();
+        void OnDetach(DetachFromPanelEvent detachFromPanelEvent) {
+            inspectorElement.UnregisterCallback<SerializedPropertyChangeEvent>(OnUpdate);
+            sceneRefProp = null;
+        }
+        void UpdateField() {
+            sceneRefProp ??= ReflectionUtil.GetBindedPropertyFromDecorator(sceneRefDecorator);
+            if (sceneRefProp != null) {
+                Object value = sceneRefProp.objectReferenceValue;
+                bool hasRef = sceneRefAttribute.HasFlags(Flag.Optional) ||
+                    !SceneRefAttributeValidator.IsEmptyOrNull(value, sceneRefProp.isArray);
+                missingRefBox.style.display = hasRef ? DisplayStyle.None : DisplayStyle.Flex;
+            }
         }
     }
 #else
