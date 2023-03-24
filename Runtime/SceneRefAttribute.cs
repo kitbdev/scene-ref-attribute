@@ -47,13 +47,17 @@ namespace KBCore.Refs {
         /// </summary>
         Optional = 1,
         /// <summary>
-        /// Include inactive components in the results (only applies to Child and Parent). 
+        /// Include inactive components in the results (only applies to Child, Scene, and Parent). 
         /// </summary>
         IncludeInactive = 2,
         /// <summary>
         /// Allow the field to be editable in the inspector
         /// </summary>
         Editable = 4,
+        /// <summary>
+        /// Don't display the field in the inspector. Doesn't hide the HelpBox
+        /// </summary>
+        Hidden = 8,
     }
 
     /// <summary>

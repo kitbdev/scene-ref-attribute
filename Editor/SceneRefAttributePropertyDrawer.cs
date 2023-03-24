@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System.Reflection;
 #if UNITY_2022_2_OR_NEWER
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
@@ -25,6 +26,7 @@ namespace KBCore.Refs {
         public static readonly string sceneRefHelpBoxClass = "scene-ref-help-box";
 
         VisualElement sceneRefDecorator;
+        VisualElement propertyFieldVE;
         HelpBox missingRefBox;
         SerializedProperty sceneRefProp;
         InspectorElement inspectorElement;
@@ -50,6 +52,7 @@ namespace KBCore.Refs {
 
         private void OnDecoratorGeometryChanged(GeometryChangedEvent changedEvent) {
             sceneRefDecorator.UnregisterCallback<GeometryChangedEvent>(OnDecoratorGeometryChanged);
+
             // get the property field, as decorators dont have access by default
             PropertyField propertyField = sceneRefDecorator.GetFirstAncestorOfType<PropertyField>();
             if (propertyField == null) {
@@ -60,19 +63,26 @@ namespace KBCore.Refs {
             if (propertyField.tooltip == null || propertyField.tooltip == "") {
                 propertyField.tooltip = $"Reference from [{sceneRefAttribute.Loc.ToString()}] assigned in OnValidate";
             }
+            propertyFieldVE = propertyField;
+            if (propertyField.childCount > 1) {
+                // the field is the first child after the decorator drawers container
+                propertyFieldVE = propertyField[1];
+            }
 
             if (!sceneRefAttribute.HasFlags(Flag.Editable)) {
                 // disable the property
-                // ? disabling the property also disables the helpbox...
-                propertyField.SetEnabled(false);
-                missingRefBox.SetEnabled(true);
+                propertyFieldVE.SetEnabled(false);
+            }
+            if (sceneRefAttribute.HasFlags(Flag.Hidden)) {
+                propertyFieldVE.style.display = DisplayStyle.None;
             }
 
+            UpdateField();
 
             // get inspector element to register an onvalidate callback
             inspectorElement = propertyField.GetFirstAncestorOfType<InspectorElement>();
             if (inspectorElement == null) {
-                Debug.LogError($"AddNote - inspectorElement null!");
+                Debug.LogError($"SceneRefAttributePropertyDrawer - inspectorElement null!");
                 return;
             }
             // this properly responds to all changes
@@ -87,10 +97,23 @@ namespace KBCore.Refs {
         void UpdateField() {
             sceneRefProp ??= ReflectionUtil.GetBindedPropertyFromDecorator(sceneRefDecorator);
             if (sceneRefProp != null) {
+                // update helpbox
+
+                // update display
                 Object value = sceneRefProp.objectReferenceValue;
                 bool hasRef = sceneRefAttribute.HasFlags(Flag.Optional) ||
                     !SceneRefAttributeValidator.IsEmptyOrNull(value, sceneRefProp.isArray);
+                // Debug.Log($"sceneref {propertyFieldVE.name} has:{hasRef} opt{sceneRefAttribute.HasFlags(Flag.Optional)} val:{value?.ToString() ?? "none"}");
                 missingRefBox.style.display = hasRef ? DisplayStyle.None : DisplayStyle.Flex;
+
+                // update text
+                // string typeName = mi?.ReflectedType?.Name ?? "";
+                string typeName = sceneRefProp.type;
+                var mi = ReflectionUtil.GetMemberInfo(sceneRefProp.serializedObject.targetObject.GetType(), sceneRefProp.propertyPath);
+                if (mi != null && mi is FieldInfo fieldInfo) {
+                    typeName = fieldInfo.FieldType.Name;
+                }
+                missingRefBox.text = $"Missing {typeName} reference '{sceneRefProp.propertyPath}' on {sceneRefAttribute.Loc}!";
             }
         }
     }
